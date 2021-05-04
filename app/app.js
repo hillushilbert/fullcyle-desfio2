@@ -36,7 +36,7 @@ function conexao(){
 
 async function ler()
 {
-    console.log('function ler');
+    // console.log('function ler');
     var conn = conexao();
 
     var resHtml = `<table border="1">
@@ -51,7 +51,7 @@ async function ler()
     const result = Object.values(JSON.parse(JSON.stringify(rows)));
 
     result.forEach(function(row,index){
-        console.debug(row.nome);
+        // console.debug(row.nome);
         resHtml += `<tr>
                         <td>${row.id}</td>
                         <td>${row.nome}</td>
@@ -63,23 +63,37 @@ async function ler()
     return resHtml;
 }
 
-function salvar()
+async function salvar()
 {
-    var conn = conexao();
 
-    const indice = Math.floor(Math.random() * 9) + 1;
-    console.log(`Indice do nome do autor ${indice}`);  
-    const author = nomes[indice];
-    conn.query('INSERT INTO people (nome) values (?)', author, (err, res) => {
-        if(err) throw err;
+    // return new Promise((resolve, reject) => {
+        
+        var conn = conexao();
 
-        console.log('Last insert ID:', res.insertId);
-    });
+        const indice = Math.floor(Math.random() * 9) + 1;
+        console.log(`Indice do nome do autor ${indice}`);  
+        const author = nomes[indice];
+
+        const query = util.promisify(conn.query).bind(conn);
+
+        const rows = await query('INSERT INTO people (nome) values (?)', author);
+        console.debug(rows);
+
+        // conn.query('INSERT INTO people (nome) values (?)', author, (err, res) => {
+        //     if(err) throw err;
+    
+        //     console.log('Last insert ID:', res.insertId);
+        // });        
+
+
+    // });
+
+    
 }
 
 app.get('/', async (req, res) => {
 
-    salvar();
+    await salvar();
 
     var resHtml = `<h1>Full Cycle Rocks!</h1>
     <p>Lista de nomes dos autores está logo abaixo:</p>`;
@@ -89,7 +103,7 @@ app.get('/', async (req, res) => {
     }catch(e){
         resHtml = '<h1>Erro ao realizar leitura no banco</h1>';
     }
-    console.log(leitura);
+    // console.log(leitura);
     res.send(resHtml); 
 });
 

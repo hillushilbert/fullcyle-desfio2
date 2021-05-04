@@ -13,7 +13,6 @@ services:
     ports:
         - "81:80"  
     depends_on:
-      - "app"
       - "mysql"
     networks: 
       - desafio        
@@ -24,16 +23,18 @@ services:
       context: .
     image: hillushilbert/node
     container_name: node
-    entrypoint: dockerize -wait tcp://mysql:3306 -timeout 20s docker-entrypoint.sh docker-entrypoint.sh
-    command: npm run dev
-    volumes:
-      - ./app:/var/www/app
+    # entrypoint: dockerize -wait tcp://mysql:3306 docker-entrypoint.sh
+    command: ["dockerize" ,"-wait" ,"tcp://mysql:3306","-timeout","50s","npm", "run", "dev"]
+    # command: ["npm", "run", "dev"]
+    # volumes:
+    #   - ./app:/var/www/app
     ports:
       - target: 3000
         published: 3000
     networks: 
       - desafio  
     depends_on:
+      - "nginx"
       - "mysql"
   # Banco de dados
   mysql:
