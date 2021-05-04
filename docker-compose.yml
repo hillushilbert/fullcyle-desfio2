@@ -11,7 +11,7 @@ services:
       - ./public:/var/www/public
       - ./docker-compose/nginx:/etc/nginx
     ports:
-        - "81:80"  
+        - "8080:80"  
     depends_on:
       - "mysql"
     networks: 
