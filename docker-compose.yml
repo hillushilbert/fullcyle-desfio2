@@ -13,7 +13,7 @@ services:
     ports:
         - "8080:80"  
     depends_on:
-      - "mysql"
+      - "app"
     networks: 
       - desafio        
   # Web Application
@@ -34,7 +34,6 @@ services:
     networks: 
       - desafio  
     depends_on:
-      - "nginx"
       - "mysql"
   # Banco de dados
   mysql:
